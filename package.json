@@ -19,7 +19,7 @@
   "homepage": "https://github.com/ManuVairagi1/Forkify#readme",
   "dependencies": {},
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.0.0-nightly.735",
-    "parcel": "^2.0.0-nightly.733"
+    "parcel": "^2.0.0-nightly.733",
+    "scss": "^0.2.4"
   }
 }
