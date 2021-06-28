@@ -1,4 +1,8 @@
 import * as model from './model.js';
+import icons from 'url:../img/icons.svg';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+console.log(icons);
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -17,16 +21,46 @@ const timeout = function (s) {
 
 ///////////////////////////////////////
 
+//spinner loading
+
+const renderSpinner = function (parentEl) {
+  const markup = `<div class="spinner">
+  <svg>
+    <use href=" ${icons}#icon-loader"></use>
+  </svg>
+</div>`;
+  parentEl.innerHTML = '';
+  parentEl.insertAdjacentHTML('afterbegin', markup);
+};
+
 const showRecipe = async function () {
   //1. Loading Recipe
 
   try {
+    renderSpinner(recipeContainer);
     const id = window.location.hash.slice(1);
+    console.log(id);
 
     if (!id) return;
 
-    await model.loadRecipe(id);
-    const { recipe } = model.state;
+    const res = await fetch(
+      ` https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(`${data.message} ${res.status}`);
+    let { recipe } = data.data;
+    recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      image: recipe.image_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients,
+    };
 
     //2. Rendering Recipe
 
@@ -40,7 +74,7 @@ const showRecipe = async function () {
   <div class="recipe__details">
     <div class="recipe__info">
       <svg class="recipe__info-icon">
-        <use href="src/img/icon-clock"></use>
+        <use href=" ${icons}#icon-clock"></use>
       </svg>
       <span class="recipe__info-data recipe__info-data--minutes">${
         recipe.cookingTime
@@ -59,12 +93,12 @@ const showRecipe = async function () {
       <div class="recipe__info-buttons">
         <button class="btn--tiny btn--increase-servings">
           <svg>
-            <use href="src/img/icon-minus-circle"></use>
+            <use href=" ${icons}#icon-minus-circle"></use>
           </svg>
         </button>
         <button class="btn--tiny btn--increase-servings">
           <svg>
-            <use href="src/img/icon-plus-circle"></use>
+            <use href=" ${icons}#icon-plus-circle"></use>
           </svg>
         </button>
       </div>
@@ -72,12 +106,12 @@ const showRecipe = async function () {
 
     <div class="recipe__user-generated">
       <svg>
-        <use href="src/img/icon-user"></use>
+        <use href=" ${icons}#"></use>
       </svg>
     </div>
     <button class="btn--round">
       <svg class="">
-        <use href="src/img/icon-bookmark-fill"></use>
+        <use href=" ${icons}#icon-bookmark-fill"></use>
       </svg>
     </button>
   </div>
@@ -89,7 +123,7 @@ const showRecipe = async function () {
        .map(ing => {
          return `<li class="recipe__ingredient">
        <svg class="recipe__icon">
-         <use href="src/img/icon-check"></use>
+         <use href=" ${icons}#icon-check"></use>
        </svg>
        <div class="recipe__quantity">${ing.quantity}</div>
        <div class="recipe__description">
@@ -121,7 +155,7 @@ const showRecipe = async function () {
     >
       <span>Directions</span>
       <svg class="search__icon">
-        <use href="src/img/icon-arrow-right"></use>
+        <use href=" ${icons}#icon-arrow-right"></use>
       </svg>
     </a>
   </div>`;
@@ -132,14 +166,11 @@ const showRecipe = async function () {
     alert(err);
   }
 };
+showRecipe();
 
-[
-  // window.addEventListener('hashchange', showRecipe);
-  // window.addEventListener('load', showRecipe);
-
-  //Imagine having so many event Listeners for the same event handler function , so I think that we should loop over to all of them from a array
-
-  ('hashchange', 'load'),
-].forEach(ev => {
+// window.addEventListener('hashchange', showRecipe),
+// window.addEventListener('load', showRecipe),
+//Imagine having so many event Listeners for the same event handler function , so I think that we should loop over to all of them from a array
+[('hashchange', 'load')].forEach(ev => {
   window.addEventListener(ev, showRecipe);
 });

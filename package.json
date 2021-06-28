@@ -2,7 +2,7 @@
   "name": "forkify",
   "version": "1.0.0",
   "description": "Recipe Application",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html"
@@ -17,8 +17,12 @@
     "url": "https://github.com/ManuVairagi1/Forkify/issues"
   },
   "homepage": "https://github.com/ManuVairagi1/Forkify#readme",
-  "dependencies": {},
+  "dependencies": {
+    "core-js": "^3.15.1",
+    "regenerator-runtime": "^0.13.7"
+  },
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.0-nightly.735",
     "parcel": "^2.0.0-nightly.733",
     "scss": "^0.2.4"
   }
